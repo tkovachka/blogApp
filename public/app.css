@@ -1,0 +1,23 @@
+i .icon {
+  font-size: 2rem;
+  size: 30px;
+  /* transition: 0.4s ease-in-out; */
+}
+body {
+  background: rgb(139, 139, 139);
+}
+.container.main {
+  padding-top: 10px;
+}
+div #indexbody {
+  padding-left: 40%;
+}
+.meta {
+  float: right;
+}
+h1 {
+  color: brown;
+}
+#delete {
+  display: inline;
+}
