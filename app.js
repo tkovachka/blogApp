@@ -1,14 +1,24 @@
-var express = require("express"),
+require('dotenv').config();
+// Module Imports.
+const express = require("express"),
   app = express(),
   mongoose = require("mongoose"),
-  expressSanitizer = require("express-sanitizer");
-bodyParser = require("body-parser");
-var methodOverride = require("method-override");
+  expressSanitizer = require("express-sanitizer"),
+  bodyParser = require("body-parser"),
+  methodOverride = require("method-override");
+const PORT = process.env.PORT || 3000;
 
 //APP CONFIG.
+
 mongoose.set("useUnifiedTopology", true);
-mongoose.connect("mongodb://localhost/Blog_app", { useNewUrlParser: true });
-mongoose.set("useFindAndModify", false); //to avoid deprecation warning.
+mongoose.connect(process.env.MONGODBURI,
+ { useNewUrlParser: true,
+   useUnifiedTopology : true,
+    useCreateIndex : true
+ }, ()=>{
+   console.log(`Connected to the DataBase!`);
+ });
+mongoose.set("useFindAndModify", false); 
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(expressSanitizer());
@@ -16,21 +26,16 @@ app.use(express.static("public"));
 app.use(methodOverride("_method"));
 
 //Mongoose model config.
-var blogSchema = new mongoose.Schema({
-  title: String,
-  image: String,
-  body: String,
-  created: { type: Date, default: Date.now },
-});
-var Blog = mongoose.model("Blog", blogSchema);
-
-//RESTFUL ROUTES
-// Blog.create({
-//   title: "About Dog",
-//   image:
-//     "https://images.unsplash.com/photo-1552053831-71594a27632d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1000&q=60",
-//   body: "A sample blog post on the database",
+// var blogSchema = new mongoose.Schema({
+//   title: String,
+//   image: String,
+//   body: String,
+//   created: { type: Date, default: Date.now },
 // });
+// var Blog = mongoose.model("Blog", blogSchema);
+// Importing the models
+const Blog = require('./model/blog');
+//RESTFUL ROUTES
 app.get("/", function (req, res) {
   res.redirect("/blogs");
 });
@@ -43,6 +48,12 @@ app.get("/blogs", function (req, res) {
     }
   });
 });
+// Blog.create({
+//   title: "About Dog",
+//   image:
+//     "https://images.unsplash.com/photo-1552053831-71594a27632d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1000&q=60",
+//   body: "A sample blog post on the database",
+// });
 //NEW ROUTE
 app.get("/blogs/new", function (req, res) {
   res.render("new");
@@ -105,6 +116,6 @@ app.delete("/blogs/:id", function (req, res) {
   });
 });
 
-app.listen(3000, function () {
-  console.log("Server for Blog App has started on 3000.");
+app.listen(PORT, function () {
+  console.log(`Server for Blog App has started on ${PORT}`);
 });
