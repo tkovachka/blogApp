@@ -48,7 +48,8 @@ app.get("/blogs", function (req, res) {
     }
   });
 });
-// Blog.create({
+
+//TEST CREATE  :  Blog.create({
 //   title: "About Dog",
 //   image:
 //     "https://images.unsplash.com/photo-1552053831-71594a27632d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1000&q=60",
