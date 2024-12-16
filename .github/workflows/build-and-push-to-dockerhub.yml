@@ -31,25 +31,23 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Cache Docker layers
-        uses: actions/cache@v3
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-
-      - name: Set up Docker Compose and Build
+      - name: Set up Docker Swarm
         run: |
-          docker-compose -f docker-compose.yml up -d --build
+          docker swarm init
+
+      - name: Create Docker secrets from GitHub secrets
+        run: |
+          echo "${{ secrets.SECRET_MONGODB_URI }}" | docker secret create secret_mongodb_uri -
+          echo "${{ secrets.SECRET_MONGODB_USERNAME }}" | docker secret create secret_mongodb_username -
+          echo "${{ secrets.SECRET_MONGODB_PASSWORD }}" | docker secret create secret_mongodb_password -
+
+      - name: Build Docker Compose services
+        run: |
+          docker stack deploy -c docker-compose.yml mystack
 
       - name: Push Docker Image to DockerHub
         uses: docker/build-push-action@v2
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/kiii-blogApp:latest
-          secrets: |
-            "SECRET_MONGODB_URI=${{ secrets.SECRET_MONGODB_URI }}"
-            "SECRET_MONGODB_USERNAME=${{ secrets.SECRET_MONGODB_USERNAME }}"
-            "SECRET_MONGODB_PASSWORD=${{ secrets.SECRET_MONGODB_PASSWORD }}"
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/kiii-blogapp:latest

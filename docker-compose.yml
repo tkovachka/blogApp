@@ -3,13 +3,10 @@ version: '3.8'
 services:
   mongo:
     image: mongo:latest
-    container_name: mongo
     environment:
       - MONGO_INITDB_ROOT_USERNAME_FILE=/run/secrets/secret_mongodb_username
       - MONGO_INITDB_ROOT_PASSWORD_FILE=/run/secrets/secret_mongodb_password
     command: [ "mongod", "--bind_ip", "0.0.0.0" ]
-    expose:
-      - "27017"
     ports:
       - "27017:27017"
     secrets:
@@ -20,10 +17,14 @@ services:
       - mongodb_config:/data/config
     networks:
       - app_network
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
 
   app:
-    build: .
-    container_name: blog-app
+    image: teodorakovachka/kiii-blogapp:latest
     ports:
       - "3000:3000"
     environment:
@@ -36,10 +37,15 @@ services:
       - app_network
     volumes:
       - app_data:/app
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
 
 networks:
   app_network:
-    driver: bridge
+    driver: overlay
 
 volumes:
   mongodb_data:
