@@ -5,18 +5,21 @@ services:
     image: mongo:latest
     container_name: mongo
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=password
+      - MONGO_INITDB_ROOT_USERNAME_FILE=/run/secrets/secret_mongodb_username
+      - MONGO_INITDB_ROOT_PASSWORD_FILE=/run/secrets/secret_mongodb_password
     command: [ "mongod", "--bind_ip", "0.0.0.0" ]
     expose:
       - "27017"
     ports:
       - "27017:27017"
+    secrets:
+      - secret_mongodb_username
+      - secret_mongodb_password
     volumes:
       - mongodb_data:/data/db
-      - mongodb_config:/data/configdb
+      - mongodb_config:/data/config
     networks:
-      - app-network
+      - app_network
 
   app:
     build: .
@@ -24,16 +27,18 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - MONGODBURI=mongodb://root:password@mongo:27017/Blogapp?authSource=admin
+      - MONGODBURI_FILE=/run/secrets/secret_mongodb_uri
     depends_on:
       - mongo
+    secrets:
+      - secret_mongodb_uri
+    networks:
+      - app_network
     volumes:
       - app_data:/app
-    networks:
-      - app-network
 
 networks:
-  app-network:
+  app_network:
     driver: bridge
 
 volumes:
@@ -43,3 +48,11 @@ volumes:
     driver: local
   app_data:
     driver: local
+
+secrets:
+  secret_mongodb_uri:
+    external: true
+  secret_mongodb_username:
+    external: true
+  secret_mongodb_password:
+    external: true
