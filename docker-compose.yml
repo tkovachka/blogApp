@@ -14,7 +14,7 @@ services:
       - secret_mongodb_password
     volumes:
       - mongodb_data:/data/db
-      - mongodb_config:/data/config
+      - mongodb_config:/data/configdb
     networks:
       - app_network
     deploy:

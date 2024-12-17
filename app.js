@@ -16,6 +16,7 @@ mongoose.connect(
     {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, serverSelectionTimeoutMS: 30000},
     (err) => {
         if (err) {
+            console.log("MONGODBURI: ", process.env.MONGODBURI);
             console.error("Failed to connect to DataBase: ", err);
         } else {
             console.log(`Connected to the DataBase!`);
