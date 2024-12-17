@@ -36,13 +36,6 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Set up MongoDB container with GitHub secrets
-        run: |
-          docker run -d --name mongodb \
-            -e MONGO_INITDB_ROOT_USERNAME=${{ secrets.SECRET_MONGODB_USERNAME }} \
-            -e MONGO_INITDB_ROOT_PASSWORD=${{ secrets.SECRET_MONGODB_PASSWORD }} \
-            -p 27017:27017 mongo:latest
-
       - name: Build Docker Image and Push to DockerHub
         run: |
           docker build --build-arg MONGODBURI=${{ secrets.SECRET_MONGODB_URI }} -t ${{ secrets.DOCKERHUB_USERNAME }}/kiii-blogapp:latest .
@@ -50,4 +43,4 @@ jobs:
 
       - name: Deploy Docker Compose
         run: |
-          docker-compose -f docker-compose.yml up -d
+          docker-compose -f docker-compose.yml up -d --build
