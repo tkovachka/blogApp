@@ -27,8 +27,6 @@ services:
     image: teodorakovachka/kiii-blogapp:latest
     ports:
       - "3000:3000"
-    environment:
-      - MONGODBURI_FILE=/run/secrets/secret_mongodb_uri
     depends_on:
       - mongo
     secrets:

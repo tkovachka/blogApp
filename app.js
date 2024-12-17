@@ -9,11 +9,20 @@ const express = require("express"),
 const PORT = process.env.PORT || 3000;
 
 //APP CONFIG.
+let mongodbUri = 'mongodb://mongo:27017/Blogapp'
+const mongodbUriPath = '/run/secrets/secret_mongodb_uri';
+fs.readFile(mongodbUriPath, 'utf8', (err, data) => {
+    if (err) {
+        console.error('Error reading MongoDB URI secret:', err);
+        return;
+    }
+    mongodbUri = data.trim();
+});  // Remove any extra whitespace or newlines
 
 console.log("================MONGODBURI=====================: ", process.env.MONGODBURI);
 mongoose.set("useUnifiedTopology", true);
 mongoose.connect(
-    process.env.MONGODBURI,
+    mongodbUri,
     {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, serverSelectionTimeoutMS: 30000},
     (err) => {
         if (err) {
