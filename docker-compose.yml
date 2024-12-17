@@ -16,7 +16,7 @@ services:
       - app_network
 
   app:
-    build: .
+    build: docker
     container_name: blog-app
     ports:
       - "3000:3000"
