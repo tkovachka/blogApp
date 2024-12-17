@@ -31,12 +31,8 @@ services:
 
 networks:
   app_network:
-    driver: local
 
 volumes:
   mongodb_data:
-    driver: local
   mongodb_config:
-    driver: local
   app_data:
-    driver: local
