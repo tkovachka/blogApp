@@ -37,9 +37,13 @@ jobs:
 
       - name: Create Docker secrets from GitHub secrets
         run: |
-          echo "${{ secrets.SECRET_MONGODB_URI }}" | docker secret create secret_mongodb_uri -
-          echo "${{ secrets.SECRET_MONGODB_USERNAME }}" | docker secret create secret_mongodb_username -
-          echo "${{ secrets.SECRET_MONGODB_PASSWORD }}" | docker secret create secret_mongodb_password -
+          echo "$MONGODB_URI" | docker secret create secret_mongodb_uri -
+          echo "$MONGODB_USERNAME" | docker secret create secret_mongodb_username -
+          echo "$MONGODB_PASSWORD" | docker secret create secret_mongodb_password -
+        env:
+          MONGODB_URI: ${{ secrets.SECRET_MONGODB_URI }}
+          MONGODB_USERNAME: ${{ secrets.SECRET_MONGODB_USERNAME }}
+          MONGODB_PASSWORD: ${{ secrets.SECRET_MONGODB_PASSWORD }}
 
       - name: Build Docker Compose services
         run: |
