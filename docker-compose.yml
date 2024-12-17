@@ -23,7 +23,7 @@ services:
     depends_on:
       - mongo
     environment:
-      - MONGODBURI=${MONGODBURI}
+      - MONGODBURI=${MONGODB_URI}
     volumes:
       - app_data:/app
     networks:
