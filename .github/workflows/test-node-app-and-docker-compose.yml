@@ -1,4 +1,4 @@
-name: Test Node.js Application and Docker-Compose
+name: Test Application and Docker Compose
 
 on:
   push:
@@ -51,10 +51,10 @@ jobs:
 
       - name: Check if MONGODBURI is defined
         run: |
-          if [ -z "$MONGODBURI" ]; then
-            echo "MONGODBURI is undefined or empty"
+          if [ -z "$MONGODB_URI" ]; then
+            echo "MONGODB_URI is undefined or empty"
           else
-            echo "MONGODBURI is defined"
+            echo "MONGODB_URI is defined"
           fi
 
       - name: Set up Docker Compose
