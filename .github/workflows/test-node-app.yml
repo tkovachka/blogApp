@@ -1,0 +1,41 @@
+name: Test Node.js Application
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [ 16.x, 18.x, 20.x ]
+
+    services:
+      mongo:
+        image: mongo
+        env:
+          MONGODB_USERNAME: ${{ secrets.SECRET_MONGODB_USERNAME }}
+          MONGODB_PASSWORD: ${{ secrets.SECRET_MONGODB_PASSWORD }}
+        ports:
+          - 27017:27017
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install Node.js dependencies
+        run: npm ci
+
+      - name: Run tests
+        env:
+          MONGODB_URI: ${{ secrets.SECRET_MONGODB_URI }}
+        run: npm test

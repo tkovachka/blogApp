@@ -1,0 +1,27 @@
+name: Test Docker Compose Orchestration
+
+on:
+  workflow_run:
+    workflows: ["Test Node.js Application"]
+    types:
+      - completed
+
+jobs:
+  docker-compose-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Compose
+        run: |
+          docker-compose -f docker-compose.yml up --build -d
+          sleep 10
+
+      - name: Run tests inside Docker
+        run: docker exec -it blog-app npm test
+
+      - name: Tear down Docker Compose
+        if: always()
+        run: docker-compose down
