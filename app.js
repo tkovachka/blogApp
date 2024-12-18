@@ -12,8 +12,12 @@ const PORT = process.env.PORT || 3000;
 
 mongoose.set("useUnifiedTopology", true);
 mongoose.connect(
-    process.env.MONGODBURI,
-    {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, serverSelectionTimeoutMS: 30000},
+    process.env.MONGODBURI, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        serverSelectionTimeoutMS: 30000
+    },
     (err) => {
         if (err) {
             console.error("Failed to connect to DataBase: ", err);
