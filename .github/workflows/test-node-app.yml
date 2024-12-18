@@ -6,7 +6,7 @@ on:
 
 jobs:
   test:
-
+    timeout-minutes: 30
     runs-on: ubuntu-latest
 
     strategy:
@@ -33,7 +33,7 @@ jobs:
           cache: 'npm'
 
       - name: Install Node.js dependencies
-        run: npm install
+        run: npm ci
 
       - name: Run tests
         env:

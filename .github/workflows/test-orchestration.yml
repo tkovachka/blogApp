@@ -24,9 +24,6 @@ jobs:
           docker-compose -f docker-compose.yml up --build -d
           sleep 10
 
-      - name: Run tests inside Docker
-        run: docker exec -it blog-app npm test
-
       - name: Tear down Docker Compose
         if: always()
         run: docker-compose down
