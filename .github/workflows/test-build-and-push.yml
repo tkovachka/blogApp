@@ -1,4 +1,4 @@
-name: Test Application and Docker Compose
+name: Test Application, Build Docker Image and Push to Dockerhub
 
 on:
   push:
@@ -64,3 +64,23 @@ jobs:
       - name: Tear down Docker Compose
         if: always()
         run: docker-compose down
+
+  build-and-push:
+    needs: [ test-node-app,docker-compose-test ]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build Docker Image and Push to DockerHub
+        run: |
+          docker build --build-arg MONGODBURI=${{ secrets.SECRET_MONGODB_URI }} -t ${{ secrets.DOCKERHUB_USERNAME }}/kiii-blogapp:latest .
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/kiii-blogapp:latest
