@@ -10,7 +10,6 @@ const PORT = process.env.PORT || 3000;
 
 //APP CONFIG.
 
-console.log("================MONGODBURI=====================: ", process.env.MONGODBURI);
 mongoose.set("useUnifiedTopology", true);
 mongoose.connect(
     process.env.MONGODBURI,
