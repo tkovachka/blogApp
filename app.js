@@ -11,36 +11,33 @@ const PORT = process.env.PORT || 3000;
 //APP CONFIG.
 
 mongoose.set("useUnifiedTopology", true);
-mongoose.connect(
-    process.env.MONGODBURI, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useCreateIndex: true,
-        serverSelectionTimeoutMS: 30000
-    },
-    (err) => {
-        if (err) {
-            console.error("Failed to connect to DataBase: ", err);
-        } else {
-            console.log(`Connected to the DataBase!`);
-        }
-    }
-);
 mongoose.set("useFindAndModify", false);
+
+if (process.env.NODE_ENV !== "test") {
+    mongoose.connect(
+        process.env.MONGODBURI, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            useCreateIndex: true,
+            serverSelectionTimeoutMS: 30000
+        },
+        (err) => {
+            if (err) {
+                console.error("Failed to connect to DataBase: ", err);
+            } else {
+                console.log(`Connected to the DataBase!`);
+            }
+        }
+    );
+}
+
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(expressSanitizer());
 app.use(express.static("public"));
 app.use(methodOverride("_method"));
+app.use(express.json());
 
-//Mongoose model config.
-// var blogSchema = new mongoose.Schema({
-//   title: String,
-//   image: String,
-//   body: String,
-//   created: { type: Date, default: Date.now },
-// });
-// var Blog = mongoose.model("Blog", blogSchema);
 // Importing the models
 const Blog = require("./model/blog");
 //RESTFUL ROUTES
@@ -126,6 +123,10 @@ app.delete("/blogs/:id", function (req, res) {
     });
 });
 
-app.listen(PORT, function () {
-    console.log(`Server for Blog App has started on ${PORT}`);
-});
+if (process.env.NODE_ENV !== "test") {
+    app.listen(PORT, function () {
+        console.log(`Server for Blog App has started on ${PORT}`);
+    });
+}
+
+module.exports = app;

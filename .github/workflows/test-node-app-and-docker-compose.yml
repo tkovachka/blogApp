@@ -1,0 +1,59 @@
+name: Test Node.js Application and Docker-Compose
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  test-node-app:
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [ 16.x, 18.x, 20.x ]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install Node.js dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+
+  docker-compose-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    env:
+      MONGODB_USERNAME: ${{ secrets.SECRET_MONGODB_USERNAME }}
+      MONGODB_PASSWORD: ${{ secrets.SECRET_MONGODB_PASSWORD }}
+      MONGODB_URI: ${{ secrets.SECRET_MONGODB_URI }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Docker Compose
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+
+      - name: Set up Docker Compose
+        run: |
+          docker-compose -f docker-compose.yml up --build -d
+          sleep 10
+          docker-compose logs blog-app
+
+      - name: Tear down Docker Compose
+        if: always()
+        run: docker-compose down

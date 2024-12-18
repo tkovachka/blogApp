@@ -36,6 +36,7 @@ describe("Blog API Tests", () => {
         const response = await request(app).post("/blogs").send({ blog: newBlog });
 
         expect(response.status).toBe(302); // Redirect after creation
+        expect(response.headers.location).toBe("/blogs"); // Check redirect location
         const blog = await Blog.findOne({ title: "Test Blog" });
         expect(blog).toBeTruthy();
         expect(blog.body).toBe(newBlog.body);

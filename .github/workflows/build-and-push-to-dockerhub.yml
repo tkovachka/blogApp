@@ -2,18 +2,13 @@ name: Build and Deploy Docker Image
 
 on:
   workflow_run:
-    workflows: ["Test Docker Compose Orchestration"]
+    workflows: ["Test Node.js Application and Docker-Compose"]
     types:
-      - completed
+      - success
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    env:
-      MONGODB_USERNAME: ${{ secrets.SECRET_MONGODB_USERNAME }}
-      MONGODB_PASSWORD: ${{ secrets.SECRET_MONGODB_PASSWORD }}
-      MONGODB_URI: ${{ secrets.SECRET_MONGODB_URI }}
 
     steps:
       - name: Checkout code
