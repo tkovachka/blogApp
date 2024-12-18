@@ -13,6 +13,12 @@ const PORT = process.env.PORT || 3000;
 mongoose.set("useUnifiedTopology", true);
 mongoose.set("useFindAndModify", false);
 
+if (process.env.MONGODBURI && process.env.MONGODBURI !== "" && process.env.MONGODBURI !== "undefined") {
+    console.log("MONGODBURI is defined:", process.env.MONGODBURI);
+} else {
+    console.error("MONGODBURI is not defined!");
+}
+
 if (process.env.NODE_ENV !== "test") {
     mongoose.connect(
         process.env.MONGODBURI, {

@@ -31,6 +31,7 @@ jobs:
 
 
   docker-compose-test:
+    needs: test-node-app
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -48,11 +49,17 @@ jobs:
           sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
 
+      - name: Check if MONGODBURI is defined
+        run: |
+          if [ -z "$MONGODBURI" ]; then
+            echo "MONGODBURI is undefined or empty"
+          else
+            echo "MONGODBURI is defined"
+          fi
+
       - name: Set up Docker Compose
         run: |
           docker-compose -f docker-compose.yml up --build -d
-          sleep 10
-          docker-compose logs blog-app
 
       - name: Tear down Docker Compose
         if: always()
