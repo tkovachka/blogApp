@@ -82,5 +82,5 @@ jobs:
 
       - name: Build Docker Image and Push to DockerHub
         run: |
-          docker build --build-arg MONGODBURI=${{ secrets.SECRET_MONGODB_URI }} -t ${{ secrets.DOCKERHUB_USERNAME }}/kiii-blogapp:latest .
+          docker build -f ../Dockerfile --build-arg MONGODBURI=${{ secrets.SECRET_MONGODB_URI }} -t ${{ secrets.DOCKERHUB_USERNAME }}/kiii-blogapp:latest .
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/kiii-blogapp:latest
