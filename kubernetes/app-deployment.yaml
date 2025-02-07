@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blogapp-deployment
+  namespace: blogapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: blogapp
+  template:
+    metadata:
+      labels:
+        app: blogapp
+    spec:
+      containers:
+        - name: blogapp
+          image: teodorakovachka/kiii-blogapp:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: MONGODBURI
+              valueFrom:
+                configMapKeyRef:
+                  name: blogapp-config
+                  key: MONGODBURI

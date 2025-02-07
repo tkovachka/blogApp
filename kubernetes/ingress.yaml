@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: blog-app-ingress
+  namespace: blogapp
+
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: blogapp211172.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: blogapp-service
+                port:
+                  number: 80
+    - host: localhost
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: blogapp-service
+                port:
+                  number: 80
